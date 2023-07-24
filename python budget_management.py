@@ -1,17 +1,20 @@
+from tinydb import TinyDB, Query
+
 class BudgetManagementPlatform:
     def __init__(self):
-        self.expenses = []
-        self.incomes = []
+        self.db = TinyDB('budget_db.json')
+        self.expenses = self.db.table('expenses')
+        self.incomes = self.db.table('incomes')
         self.categories = {
             'expense': ['Loyer', 'Manger', 'Transport'],
             'income': ['Salaire', 'Business']
         }
 
     def record_expense(self, amount, category):
-        self.expenses.append({'amount': amount, 'category': category})
+        self.expenses.insert({'amount': amount, 'category': category})
 
     def record_income(self, amount, category):
-        self.incomes.append({'amount': amount, 'category': category})
+        self.incomes.insert({'amount': amount, 'category': category})
 
     def calculate_balance(self):
         total_expenses = sum(expense['amount'] for expense in self.expenses)
@@ -28,9 +31,9 @@ class BudgetManagementPlatform:
 
     def show_transactions(self, transaction_type):
         if transaction_type == 'expense':
-            transactions = self.expenses
+            transactions = self.expenses.all()
         elif transaction_type == 'income':
-            transactions = self.incomes
+            transactions = self.incomes.all()
         else:
             print("Invalid transaction type. Use 'expense' or 'income'.")
             return
@@ -100,3 +103,4 @@ class BudgetManagementPlatform:
 if __name__ == "__main__":
     platform = BudgetManagementPlatform()
     platform.start()
+
